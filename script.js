@@ -123,14 +123,16 @@ const loader = document.getElementById("loader");
 loader.classList.add("hide");
 
 async function getJoke() {
-  loader.classList.remove("hide");
   const jokeApi =
     "https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single";
   try {
+    loader.classList.remove("hide");
+    button.disabled = true;
     const response = await fetch(jokeApi);
     const singleJoke = await response.json();
 
     speakText(singleJoke.joke);
+
     loader.classList.add("hide");
   } catch (error) {
     alert("whoops, there is an error ", error);
@@ -149,4 +151,7 @@ function speakText(text) {
   // Optional: Cancel any ongoing speech before speaking
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
+  utterance.onend = () => {
+    button.disabled = false;
+  };
 }
